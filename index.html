@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>捉急消息页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0,minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- build:css styles/combo.css -->
+    <link rel="stylesheet" href="vendor/photoswiper/photoswipe.css">
+    <link rel="stylesheet" href="vendor/photoswiper/default-skin/default-skin.css"> 
+
+    <link rel="stylesheet" type="text/css" href="styles/index.css" />
+    <!-- endbuild -->
+</head>
+<body>
+    <div class="mask" id="mask"></div>
+    <div class="m-resparea" id="resparea">
+        <div class="header">
+            <div class="back" id="back"></div>
+            <p class="tip">文字回复会转为语音发出</p>
+            <p class="maxwords">
+                <span class="max"></span>/50&emsp;
+            </p>
+            <div class="send" id="send"></div>
+        </div>
+        <div class="wrapper">
+            <textarea maxlength="50"></textarea>
+        </div>
+    </div>
+    <div id="main" class="main">
+        <div class="g-bd" id="mainBody">
+            <div class="m-msg" id="msg"> 
+                <div class="title" id="title">ZHUOJI</div>
+                <div class="img-wrapper swipe" id="img-wrapper">
+                    <div class="swipe-wrap j-gallery" id="j-gallery">
+                    </div>
+                    <div class="detail" id="detail">
+                        <p>张三&nbsp;12"</p>
+                        <p class="occurrence" id="occurence"></p>
+                        <p class="occurrence" id="location"></p>
+                    </div>
+                    <div class="swiper-pagination" id="swiper-pagination"></div>
+                </div>
+            </div>
+            <div class="m-play" id="play-wrapper">
+                <button class="play ut" id="play" data-params="type=click_message_url_to_listen_topic" onclick="audioManager.ontouch('main')">
+                    <span class="paused hide show"></span>
+                    <span class="playing hide">&nbsp;</span>
+                    <span class="loading animation1 hide"></span>
+                    <span class="loading animation2 hide"></span>
+                    <span class="loading animation3 hide"></span>
+                </button>
+            </div>
+            <div class="m-progressbar" id="progress-wrapper">
+                <div class="progressbar" id="progressbar"></div>
+            </div>
+            <div class="m-additional">
+                <div class="m-countdown">
+                    <span><span id="replyerNo">3</span>条回复&nbsp;|&nbsp;</span>
+                    <div class="wrapper" id="firedon">
+                        <div class="number">
+                            <div id="hour-1">0</div>
+                            <div class="last-number" id="hlast-1"></div>
+                        </div>
+                        <div class="number">
+                            <div id="hour-2">h</div>
+                            <div class="last-number" id="hlast-2"></div>
+                        </div>
+                        <span class="separator">:</span>
+                        <div class="number">
+                            <div id="minute-1">0</div>
+                            <div class="last-number" id="mlast-1"></div>
+                        </div>
+                        <div class="number">
+                            <div id="minute-2">m</div>
+                            <div class="last-number" id="mlast-2"></div>
+                        </div>
+                        <span class="separator">:</span>
+                        <div class="number">
+                            <div id="second-1">0</div>
+                            <div class="last-number" id="slast-1"></div>
+                        </div>
+                        <div class="number">
+                            <div id="second-2">s</div>
+                            <div class="last-number" id="slast-2"></div>
+                        </div>
+                    </div>后焚毁
+                </div>
+                <button class="u-btn resp ut" data-params="type=click_to_reply_topic" id="resp">回复</button>
+            </div>   
+            <div class="mask" id="mainMask"></div>
+        </div>
+        <div class="m-resp" id="m-resp">
+            <div class="arrow"></div>
+            <div class="noresp">人家很捉急，快回复我吧(∩_∩)</div>
+            <div class="wrapper">
+                <ul id="resplist">
+                    <li class="ref"></li>
+                    <li class="more"></li>
+                </ul>
+            </div>
+        </div>
+        <p class="copyright" id="copyright">©&nbsp;捉急&nbsp;2014-2015&nbsp;浙ICP证&nbsp;14040394号</p>
+    </div>
+    <a class="m-banner x-url-zhuoji" data-params="type=click_banner_to_download" data-noview="true" href="javascript:;">
+        <div class="bg"></div>
+        <div class="main">
+            <div class="logo"></div>
+            <p class="txt">小伙伴们推荐下载，还不快来！</p>
+            <div class="download">
+                <i class="ico"></i>
+                下载
+            </div>
+        </div>
+    </a>
+    
+
+    <div class="m-download-dialog" id="download-dialog">
+        <p class="txt-download" id="txt-download">[捉急]想要回复你的小伙伴快去下载吧</p>
+        <p class="txt-ignore" id="txt-ignore">TA现在很捉急<br />快点回复TA吧<br /></p>
+        <div class="confirm-wrapper clearfix" id="confirm-wrapper">     
+            <a href="javascript:;" class="u-btn download ut" id="download" data-params="type=click_message_url_to_download">下载</a>
+            <button class="u-btn cancel" id="cancel">取消</button>
+        </div>
+        <div class="ignore-wrapper clearfix" id="ignore-wrapper">
+            <a href="tel:155-5800-8512" class="u-btn call ut" id="call" data-params="typs=click_message_url_to_call">呼叫</a>
+            <a href="javascript:;" class="u-btn cancel ut" id="ignore" data-params="type=click_message_url_do_not_download">才不管</a>
+        </div>
+    </div>
+    
+    <input type="hidden" name="audio-duration" id="audio-duration" value="10000" />
+    <!-- <div data-src="http://www.w3school.com.cn/i/song.mp3" id="audio-wrapper"></div> -->
+    <div data-src="./test1.mp3" id="audio-wrapper"></div>
+
+    <div id="debug" class="g-debug"></div>
+    <input type="hidden" name="sender" id="hsender" value="老三" />
+    <input type="hidden" name="cid" id="cid" value="123cid" />
+    <input type="hidden" name="time" id="time" value="1425986474109" />
+
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <div class="pswp__counter"></div>
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                          <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/tmpl" id="respTmpl">
+        <% if (duration) { %>
+            <div id="play<%=id%>" class="m-play m-play-2" data-params="click_to_listen_reply" onclick="audioManager.ontouch('<%=id%>')">
+                <span class="paused hide show"><%=duration%>"</span>
+                <span class="playing hide"><%=duration%>"</span>
+                <span class="loading animation1 hide"></span>
+                <span class="loading animation2 hide"></span>
+                <span class="loading animation3 hide"></span>
+            </div>
+        <% } %>
+        <% if (!duration) { %>
+                <div class="loading2"></div>
+            <% } %>
+        <% if (avatarUrl) { %>
+            <img src="<%=avatarUrl%>" width="46px" height="46px" class="avatar" style="-webkit-animation-delay:<%=delay%>s" />
+        <% } %>
+        <% if (!avatarUrl) { %>
+            <div class="noavatar noavatar-<%=avatarId %>" style="-webkit-animation-delay:<%=delay%>s"><%=firstname%></div>
+        <% } %>
+        <div class="progress-wrapper">
+            <div class="progressbar progressbar-<%=id%6 %>" id="progressbar<%=id%>"></div>
+        </div>
+        <div class="extra">
+            <%=username%><br />
+            <% if (replyUserName) { %>
+                <span class="replyee">回复 <%=replyUserName%></span>
+            <% } %>
+            <% if (replyType) { %>
+                <span class="replyType"><%=replyType%></span>
+            <% } %>
+            <span class="date"><%=time%></span>
+        </div>
+    </script>
+    <script type="text/tmpl" id="imgTmpl">
+        <% if (!url && isFirst) { %>
+            <div class="swiper-slide">
+                <div id="mainImg" style="width:100%; height:100%;" data-time="<%=time%>" data-location="<%=location%>"></div>
+            </div>
+        <% } %>
+        <% if (url) { %>
+            <figure class="swiper-slide">
+                <a href="<%=url%>" data-size="<%=size%>" data-time="<%=time%>" data-location="<%=location%>">
+                    <div id="<%=id%>" class="lazy-load" data-src="<%=url%>" style="width:100%;height:100%;background-size:cover;"></div>
+                </a>
+            </figure>
+        <% } %>
+    </script>
+    <script type="text/javascript">
+        // window.replys = '';
+    window.replys = '[{"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvA.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAX-eMzfzOA_224_223.jpg","duration":1801,"id":1,"replyUserName":"哈乐哈乐哈乐","time":1421302105398,"username":"啦啦啦"}]';
+    window.replys = '[{"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvA.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAX-eMzfzOA_224_223.jpg","duration":1801,"id":1,"replyUserName":"哈乐哈乐哈乐","time":1421302105398,"username":"啦啦啦"},{"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvQ.mp3","duration":1000,"id":2,"time":1421301488381,"username":"啦啦啦"}]';
+    
+    window.photos = '[{"url":"http://i01.lw.aliimg.com/media/lADOACjBG80E_s0C0A_720_1278.jpg", "location":"北京海淀"}, {"url":"styles/images/photo2_640_640.jpg", "time":"1426126183089"}, {"url":"styles/images/photo-life_720_478.jpg", "time":"1426126183089"}]';
+
+    // window.photos = '[{"url":"styles/images/photo2_640_640.jpg", "time":"1426126183089"}, {"url":"styles/images/photo-life_720_478.jpg", "time":"1426126183089"}]';
+
+    // window.photos = '[{"url":"", "location":"北京海淀"}]';
+
+    // window.photos = '';
+    window.photos = '[{"url":"http://i01.lw.aliimg.com/media/lADOACjBG80E_s0C0A_720_1278.jpg", "location":"北京海淀"}, {"url":"styles/images/photo2_640_640.jpg", "time":"1426126183089"}, {"url":"styles/images/photo-life_720_478.jpg", "time":"1426126183089"},{"url":"http://i01.lw.aliimg.com/media/lADOACjBG80E_s0C0A_720_1278.jpg", "location":"北京海淀"}, {"url":"styles/images/photo2_640_640.jpg", "time":"1426126183089"}, {"url":"styles/images/photo-life_720_478.jpg", "time":"1426126183089"}]';
+
+    // window.photos = '[{"url":"styles/images/photo2_640_640.jpg", "time":"1426126183089"}, {"url":"styles/images/photo-life_720_478.jpg", "time":"1426126183089"}]';
+
+    window.imageUrl = '';
+    // window.photos = '[{"url":"http://i01.lw.aliimg.com/media/lADOACjBG80E_s0C0A_720_1278.jpg", "location":"北京海淀"}]';
+
+    // window.photos = '';
+    // window.replys = '[{"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvA.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAX-eMzfzOA_224_223.jpg","duration":1801,"id":1,"replyUserName":"哈乐哈乐哈乐","time":1421302105398,"username":"啦啦啦"},{"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvQ.mp3","duration":1000,"id":2,"time":1421301488381,"username":"啦啦啦"}, {"audioUrl":"http://i01.lw.aliimg.com/media/kgXOAAddvA.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAX-eMzfzOA_224_223.jpg","duration":1801,"id":3,"replyUserName":"哈乐哈乐哈乐","time":1421302105398,"username":"啦啦啦"}]';
+
+    window.replys ='[{"sortId":3,"replyType":0, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":1,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":2,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":3,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":4,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":5,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":6,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":7,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":8,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":9,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":10,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":11,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":12,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":13,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":14,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":15,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":16,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":17,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":18,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":19,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":20,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":21,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":22,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":23,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":24,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":25,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":26,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":27,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":28,"time":1421926959173,"username":"陶钧"},{"sortId":6,"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":29,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":30,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":31,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":32,"time":1421926952483,"username":"薛永海"},{"sortId":3,"replyType":0, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":33,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":34,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":35,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":36,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":37,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":38,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":39,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":40,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":41,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":42,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":43,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":44,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":45,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":46,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":47,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":48,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":49,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":50,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":51,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":52,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":53,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":54,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":55,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":56,"time":1421926952483,"username":"薛永海"},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":57,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":58,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":59,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":60,"time":1421926959173,"username":"陶钧"},{"sortId":6,"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":61,"time":1421926952483,"username":"薛永海"},{"audioUrl":"http://i01.lw.aliimg.com/tfs/TB1j4CTHXXXXXbOaXXXBJUo.FXXLAIWANGa_1.mp3","duration":10445,"id":62,"time":1421926919066, "sortId":6},{"sortId":3, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB12LujHXXXXXcFXFXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAKF1M0Cgc0CgA_640_641.jpg","duration":5814,"id":63,"time":1421926959173,"username":"陶钧"},{"sortId":6, "audioUrl":"http://i01.lw.aliimg.com/tfs/TB1q2CVHXXXXXbuXVXXBJUo.FXXLAIWANGa_1.mp3","avatarUrl":"http://i01.lw.aliimg.com/media/lADOAAx-KM0CgM0CgA_640_640.jpg","duration":4390,"id":64,"time":1421926952483,"username":"薛永海"}]';
+    </script>
+   <!--  <iframe src="zhuoji://z/zj/conv?cid=123" width="0" height="0" style="display:none;"></iframe> -->
+    
+    
+    <script src="vendor/photoswiper/photoswipe.min.js"></script>
+    
+    <!-- build:js javascript/combo.js -->
+    <script type="text/javascript" src="vendor/swipe/swipe.js"></script>
+    <script src="vendor/photoswiper/photoswipe-ui-default.min.js"></script> 
+
+    
+    <script type="text/javascript" src="javascript/common.js"></script>
+    <script type="text/javascript" src="javascript/landing.js"></script>
+
+    <script type="text/javascript" src="javascript/audio.js"></script>
+    <script type="text/javascript" src="javascript/audio-manager.js"></script>
+
+    <script type="text/javascript" src="javascript/tmpl.js"></script>
+    <script type="text/javascript" src="javascript/index.js"></script>
+    <script type="text/javascript" src="javascript/countdown.js"></script>
+    <script type="text/javascript" src="javascript/analysis.js"></script>
+    <script type="text/javascript" src="javascript/resp.js"></script>
+    <script type="text/javascript" src="javascript/gallery.js"></script>
+    <script type="text/javascript" src="javascript/multipic.js"></script>
+    <!-- endbuild -->
+   <!-- <script src="http://10.2.42.253:8082/target/target-script-min.js#anonymous"></script>-->
+</body>
+</html>
